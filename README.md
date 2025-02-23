@@ -20,7 +20,7 @@ pip install --pre torch torchvision torchaudio --index-url https://download.pyto
 ```
 py main.py
 ```
-for dry running, you could use the portable pack under releases
+for dry running, you could use the portable pack under **releases**
 
 ### references
 - ui-codebase: comfy
