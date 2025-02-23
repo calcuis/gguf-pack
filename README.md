@@ -24,7 +24,7 @@ for dry running, you could use the portable pack under **releases**
 
 metadata inside the sample picture above (drag to browser for workflow)
 
-### major difference between gguf-pack and comfy
+### * major difference between gguf-pack and comfy
 - gguf is a core node in gguf-pack
 - gguf is a custom node in comfy
 
