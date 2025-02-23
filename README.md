@@ -1,10 +1,10 @@
-# gguf-pack
+## gguf-pack
 clone the pack and install the dependencies required
 ```
 pip install -r requirements.txt
 ```
 
-## cuda user
+### cuda user
 uninstall torch (if you executed the command above)
 ```
 pip uninstall torch
