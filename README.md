@@ -22,6 +22,8 @@ py main.py
 ```
 for dry running, you could use the portable pack under **releases**
 
+![screenshot](https://raw.githubusercontent.com/calcuis/comfy/master/gguf-pack.png)
+
 ### references
 - ui-codebase: comfy
 - base: llama.cpp
