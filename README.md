@@ -7,7 +7,7 @@ pip install -r requirements.txt
 ```
 
 ## cuda user
-uninstall torch
+uninstall torch (if you executed the command above)
 ```
 pip uninstall torch
 ```
