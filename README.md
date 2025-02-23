@@ -1,4 +1,3 @@
-
 # gguf-pack
 
 clone the pack and install the dependencies required
@@ -23,6 +22,8 @@ py main.py
 for dry running, you could use the portable pack under **releases**
 
 ![screenshot](https://raw.githubusercontent.com/calcuis/comfy/master/gguf-pack.png)
+
+metadata inside the sample picture above (drag it to browser for workflow)
 
 ### references
 - ui-codebase: comfy
