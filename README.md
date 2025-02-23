@@ -23,7 +23,7 @@ for dry running, you could use the portable pack under **releases**
 
 ![screenshot](https://raw.githubusercontent.com/calcuis/comfy/master/gguf-pack.png)
 
-metadata inside the sample picture above (drag it to browser for workflow)
+metadata inside the sample picture above (drag to browser for workflow)
 
 ### references
 - ui-codebase: comfy
