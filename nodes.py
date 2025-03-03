@@ -22,8 +22,7 @@ for key, value in data[0].items():
     arrays[key] = value
 class GGUFModelPatcher(comfy.model_patcher.ModelPatcher):
     patch_on_device = False
-    def patch_weight_to_device(self, key, device_to=None, inplace_update=False
-        ):
+    def patch_weight_to_device(self, key, device_to=None, inplace_update=False):
         if key not in self.patches:
             return
         weight = comfy.utils.get_attr(self.model, key)
@@ -128,6 +127,13 @@ class GGMLTensor(torch.Tensor):
         if not hasattr(self, 'tensor_shape'):
             self.tensor_shape = self.size()
         return self.tensor_shape
+if hasattr(torch, "compiler") and hasattr(torch.compiler, "disable"):
+    torch_compiler_disable = torch.compiler.disable
+else:
+    def torch_compiler_disable(*args, **kwargs):
+        def noop(x):
+            return x
+        return noop
 class GGMLLayer(torch.nn.Module):
     comfy_cast_weights = True
     dequant_dtype = None
@@ -204,6 +210,7 @@ class GGMLLayer(torch.nn.Module):
                     self.patch_dtype)
                 weight = function(patch_list, weight, key, patch_dtype)
         return weight
+    @torch_compiler_disable()
     def cast_bias_weight(s, input=None, dtype=None, device=None, bias_dtype
         =None):
         if input is not None:
@@ -777,6 +784,36 @@ class TENSORCut:
         save_file(quantized_data, output_file)
         print(f'Quantized safetensors saved to {output_file}.')
         return {}
+class TENSORBoost:
+    def __init__(self):
+        self.output_dir = folder_paths.get_output_directory()
+    @classmethod
+    def INPUT_TYPES(s):
+        return {'required': {'select_safetensors': (s.get_filename_list(),)}}
+    RETURN_TYPES = ()
+    FUNCTION = 'boost'
+    OUTPUT_NODE = True
+    CATEGORY = 'gguf'
+    TITLE = 'TENSOR Booster'
+    @classmethod
+    def get_filename_list(s):
+        files = []
+        files += folder_paths.get_filename_list('select_safetensors')
+        return sorted(files)
+    def boost(self, select_safetensors):
+        input_file = folder_paths.get_full_path('select_safetensors',
+            select_safetensors)
+        output_file = (
+            f'{self.output_dir}/{os.path.splitext(select_safetensors)[0]}_fp32.safetensors'
+            )
+        data = load_file(input_file)
+        quantized_data = {}
+        print('Starting quantization process...')
+        for key, tensor in loading(data.items(), desc="Converting tensors", unit="tensor"):
+            quantized_data[key] = tensor.to(torch.float32)
+        save_file(quantized_data, output_file)
+        print(f'Quantized safetensors saved to {output_file}.')
+        return {}
 def load_gguf_and_extract_metadata(gguf_path):
     reader = gr.GGUFReader(gguf_path)
     tensors_metadata = []
@@ -838,9 +875,7 @@ class GGUFUndo:
         return sorted(files)
     def undo(self, select_gguf):
         in_file = folder_paths.get_full_path('select_gguf', select_gguf)
-        out_file = (
-            f'{self.output_dir}/{os.path.splitext(select_gguf)[0]}_fp16.safetensors'
-            )
+        out_file = (f'{self.output_dir}/{os.path.splitext(select_gguf)[0]}_fp16.safetensors')
         use_bf16 = False
         convert_gguf_to_safetensors(in_file, out_file, use_bf16)
         return {}
@@ -1848,7 +1883,7 @@ class CLIPLoader:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": { "clip_name": (folder_paths.get_filename_list("text_encoders"), ),
-                              "type": (["stable_diffusion", "stable_cascade", "sd3", "stable_audio", "mochi", "ltxv", "pixart", "cosmos", "lumina2"], ),
+                              "type": (["stable_diffusion", "stable_cascade", "sd3", "stable_audio", "mochi", "ltxv", "pixart", "cosmos", "lumina2", "wan"], ),
                               },
                 "optional": {
                               "device": (["default", "cpu"], {"advanced": True}),
@@ -1858,7 +1893,7 @@ class CLIPLoader:
 
     CATEGORY = "advanced/loaders"
 
-    DESCRIPTION = "[Recipes]\n\nstable_diffusion: clip-l\nstable_cascade: clip-g\nsd3: t5 / clip-g / clip-l\nstable_audio: t5\nmochi: t5\ncosmos: old t5 xxl\nlumina2: gemma 2 2B"
+    DESCRIPTION = "[Recipes]\n\nstable_diffusion: clip-l\nstable_cascade: clip-g\nsd3: t5 xxl/ clip-g / clip-l\nstable_audio: t5 base\nmochi: t5 xxl\ncosmos: old t5 xxl\nlumina2: gemma 2 2B\nwan: umt5 xxl"
 
     def load_clip(self, clip_name, type="stable_diffusion", device="default"):
         if type == "stable_cascade":
@@ -1877,6 +1912,8 @@ class CLIPLoader:
             clip_type = comfy.sd.CLIPType.COSMOS
         elif type == "lumina2":
             clip_type = comfy.sd.CLIPType.LUMINA2
+        elif type == "wan":
+            clip_type = comfy.sd.CLIPType.WAN
         else:
             clip_type = comfy.sd.CLIPType.STABLE_DIFFUSION
 
@@ -2974,6 +3011,7 @@ NODE_CLASS_MAPPINGS = {
     "GGUFSave": GGUFSave,
     "GGUFRun": GGUFRun,
     "TENSORCut": TENSORCut,
+    "TENSORBoost": TENSORBoost,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -3052,6 +3090,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "GGUFSave": "GGUF Convertor (Alpha)",
     "GGUFRun": "GGUF Convertor (Zero)",
     "TENSORCut": "TENSOR Cutter (Beta)",
+    "TENSORBoost": "TENSOR Booster",
 }
 
 EXTENSION_WEB_DIRS = {}
@@ -3223,6 +3262,7 @@ def init_builtin_extra_nodes():
         "nodes_cosmos.py",
         "nodes_video.py",
         "nodes_lumina2.py",
+        "nodes_wan.py",
     ]
 
     import_failed = []
