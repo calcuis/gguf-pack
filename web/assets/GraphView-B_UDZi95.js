@@ -3651,8 +3651,8 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
           ref: topMenuRef,
           class: normalizeClass(["comfyui-menu flex items-center", { dropzone: isDropZone.value, "dropzone-active": isDroppable.value }])
         }, [
-          // _cache[1] || (_cache[1] = createBaseVNode("h1", { class: "comfyui-logo mx-2 app-drag" }, "ComfyUI", -1)),
           _cache[1] || (_cache[1] = createBaseVNode("h1", { class: "comfyui-logo mx-2 app-drag" }, "GGUF", -1)),
+          // _cache[1] || (_cache[1] = createBaseVNode("h1", { class: "comfyui-logo mx-2 app-drag" }, "ComfyUI", -1)),
           createVNode(CommandMenubar),
           createBaseVNode("div", _hoisted_1$1, [
             workflowTabsPosition.value === "Topbar" ? (openBlock(), createBlock(WorkflowTabs, { key: 0 })) : createCommentVNode("", true)

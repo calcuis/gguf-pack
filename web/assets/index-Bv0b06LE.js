@@ -154214,11 +154214,6 @@ const useAboutPanelStore = /* @__PURE__ */ defineStore("aboutPanel", () => {
     //   icon: "pi pi-github"
     // },
     // {
-    //   label: `ui v${frontendVersion}`,
-    //   url: "https://github.com/Comfy-Org/ComfyUI_frontend",
-    //   icon: "pi pi-github"
-    // },
-    // {
     //   label: `ComfyUI_frontend v${frontendVersion}`,
     //   url: "https://github.com/Comfy-Org/ComfyUI_frontend",
     //   icon: "pi pi-github"
@@ -154228,8 +154223,7 @@ const useAboutPanelStore = /* @__PURE__ */ defineStore("aboutPanel", () => {
     //   url: "https://www.comfy.org/discord",
     //   icon: "pi pi-discord"
     // },
-    // { label: "ComfyOrg", url: "https://www.comfy.org/", icon: "pi pi-globe" },
-    // { label: "comfy", url: "https://www.comfy.org", icon: "pi pi-globe" },
+    // { label: "ComfyOrg", url: "https://www.comfy.org/", icon: "pi pi-globe" }
     {
       label: "gguf",
       url: "https://github.com/calcuis/gguf",
@@ -161432,16 +161426,22 @@ const CORE_MENU_COMMANDS = [
   [
     ["Help"],
     [
-      "Comfy.Help.OpenGGUFGitHub",
-      "Comfy.Help.OpenGGUFDiscord"
-      // "Comfy.Help.OpenComfyUIIssues",
-      // "Comfy.Help.OpenComfyUIDocs",
-      // "Comfy.Help.OpenComfyOrgDiscord",
-      // "Comfy.Help.OpenComfyUIForum"
-    ]
+  //     "Comfy.Help.OpenComfyUIIssues",
+  //     "Comfy.Help.OpenComfyUIDocs",
+  //     "Comfy.Help.OpenComfyOrgDiscord",
+  //     "Comfy.Help.OpenComfyUIForum"
+  //   ]
+  // ],
+  // [["Help"], ["Comfy.Help.AboutComfyUI", "Comfy.Feedback"]]
+    "Comfy.Help.OpenGGUFGitHub",
+    "Comfy.Help.OpenGGUFDiscord"
+    // "Comfy.Help.OpenComfyUIIssues",
+    // "Comfy.Help.OpenComfyUIDocs",
+    // "Comfy.Help.OpenComfyOrgDiscord",
+    // "Comfy.Help.OpenComfyUIForum"
+  ]
   ],
   [["Help"], ["Comfy.Help.AboutGGUF"]]
-  // [["Help"], ["Comfy.Help.AboutComfyUI", "Comfy.Feedback"]]
 ];
 const useMenuItemStore = /* @__PURE__ */ defineStore("menuItem", () => {
   const commandStore = useCommandStore();
