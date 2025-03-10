@@ -1,4 +1,4 @@
-## gguf-pack [![Static Badge](https://img.shields.io/badge/ver-0.0.26-black?logo=github)](https://github.com/calcuis/gguf-pack/releases)
+## gguf-pack [![Static Badge](https://img.shields.io/badge/ver-0.0.32-black?logo=github)](https://github.com/calcuis/gguf-pack/releases)
 clone the pack and install the dependencies required
 ```
 pip install -r requirements.txt
